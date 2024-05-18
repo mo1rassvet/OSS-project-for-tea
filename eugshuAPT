@@ -1,0 +1,54 @@
+import apt
+
+def list_installed_packages():
+    """List all installed packages."""
+    cache = apt.Cache()
+    for package in cache:
+        if package.is_installed:
+            print(package.name)
+
+def install_package(package_name):
+    """Install a package."""
+    cache = apt.Cache()
+    if cache[package_name].is_installed:
+        print(f"{package_name} is already installed.")
+    else:
+        package = cache[package_name]
+        package.mark_install()
+
+        try:
+            cache.commit()
+            print(f"{package_name} installed successfully.")
+        except Exception as e:
+            print(f"Failed to install {package_name}: {e}")
+
+def remove_package(package_name):
+    """Remove a package."""
+    cache = apt.Cache()
+    if not cache[package_name].is_installed:
+        print(f"{package_name} is not installed.")
+    else:
+        package = cache[package_name]
+        package.mark_delete()
+
+        try:
+            cache.commit()
+            print(f"{package_name} removed successfully.")
+        except Exception as e:
+            print(f"Failed to remove {package_name}: {e}")
+
+# Example usage:
+print("Installed packages:")
+list_installed_packages()
+
+print("\nInstalling 'vim'...")
+install_package('vim')
+
+print("\nInstalled packages after installation:")
+list_installed_packages()
+
+print("\nRemoving 'vim'...")
+remove_package('vim')
+
+print("\nInstalled packages after removal:")
+list_installed_packages()
